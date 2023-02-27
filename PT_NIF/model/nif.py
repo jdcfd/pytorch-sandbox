@@ -7,7 +7,7 @@ from model.param_net import ParamNet
 from model.shape_net import ShapeNet
 
 class NIF_small(pl.LightningModule):
-    def __init__(self,act='silu',learning_rate=0.01):
+    def __init__(self,act='silu',learning_rate=0.001):
         super().__init__()
         if act == 'silu':
             self.act_fn = F.silu
@@ -34,12 +34,12 @@ class NIF_small(pl.LightningModule):
         # training_step defines the train loop.
         x, t, u = batch
         params = self.param_net(t)
-        pred = self.shape_net(x,params)
+        pred = self.shape_net(x,params,self.act_fn)
         loss = F.mse_loss(pred, u)
         self.log("test_loss", loss)
         return {'loss': loss}
 
     def configure_optimizers(self):
-        optimizer = torch.optim.SGD(self.parameters(), lr=self.lr)
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
         return optimizer
 
