@@ -38,6 +38,15 @@ class NIF_small(pl.LightningModule):
         loss = F.mse_loss(pred, u)
         self.log("test_loss", loss)
         return {'loss': loss}
+    
+    def forward(self, batch):
+        x,t = batch
+        params = self.param_net(t)
+        pred = self.shape_net(x,params,self.act_fn)
+        return pred
+    
+    def predict_step(self, batch, batch_idx, dataloader_idx=0):
+        return self(batch)
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
