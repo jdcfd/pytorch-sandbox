@@ -31,7 +31,7 @@ def ShapeNet(x,params,N_l=4,N_s=2,act_fn=F.silu):
     b3   = torch.reshape(params[:,(2*N_s**2+5*N_s):],(-1,1))
 
     u = act_fn(F.linear(x,w0,b0))
-    u = act_fn(F.linear(u,w1,b1) + u
-    u = act_fn(F.linear(u,w2,b2) + u
+    u = act_fn(F.linear(u,w1,b1)) + u
+    u = act_fn(F.linear(u,w2,b2)) + u
     u = F.linear(u,w3,b3)
     return u
